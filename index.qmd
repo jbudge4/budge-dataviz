@@ -16,7 +16,7 @@ We explored this question using sleep and body-weight records for 83 mammal spec
 
 To fit tiny and enormous mammals on the same graph, the weight axis increases in multiples of ten: from 0.01 kg to 0.1 kg, then 1 kg, 10 kg, and so on. We added a straight line to summarize the overall trend.
 
-```{r - plot1}
+```{r - layplot1}
 # Visualization 1: body size and daily sleep in mammals
 # Data: ggplot2::msleep
 # Source: https://ggplot2.tidyverse.org/reference/msleep.html
@@ -80,7 +80,7 @@ To take a closer look, we split the data into groups of related mammals. We incl
 Together, these groups include 52 of the original 83 species. Each panel in Figure 2 has its own trend line, but all use the same scales so they can be compared directly.
 
 
-```{r - plot2}
+```{r - layplot2}
 #| message: false
 #count the types of animal in the 'orders' (e.g. rodent, primate)
 #then only take ones with greater than 6 animals
@@ -168,7 +168,7 @@ Sleep duration varies considerably across mammalian species. Proposed physiologi
 
 To examine this relationship, we used the msleep dataset from the ggplot2 package, which contains observations for 83 mammalian species. The analysis focused on body mass in kilograms and total daily sleep duration in hours. The dataset’s sleep and body-mass measurements were compiled from Savage and West (2007). Because body mass varies widely across species, we applied a base-10 logarithmic transformation. This allows very small and very large mammals to be displayed on the same axis, with equal spacing representing tenfold increases in body mass. We fitted a linear regression predicting daily sleep duration from log-transformed body mass.
 
-```{r - plot1}
+```{r - sciplot1}
 # Visualization 1: body size and daily sleep in mammals
 # Data: ggplot2::msleep
 # Source: https://ggplot2.tidyverse.org/reference/msleep.html
@@ -225,7 +225,7 @@ Figure 1 shows a negative association across the 83 species: smaller mammals gen
 
 To explore whether the overall relationship also appears within groups of related mammals, we repeated the plot separately for each mammalian order with at least six observations. This selection retained four orders: Rodentia (rodents; 22 species), Carnivora (carnivorans; 12 species), Primates (12 species), and Artiodactyla (even-toed ungulates; 6 species). The six-observation threshold was a practical choice to exclude groups with very few species. Together, these orders account for 52 of the original 83 observations. We fitted a separate regression line for each order, using the same log-transformed body mass and axis ranges as in Figure 1.
 
-```{r - plot2}
+```{r - sciplot2}
 #| message: false
 #count the types of animal in the 'orders' (e.g. rodent, primate)
 #then only take ones with greater than 6 animals
