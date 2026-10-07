@@ -7,9 +7,59 @@ toc: true
 code-fold: true
 ---
 
+####PLOT1
+```{r - plot1}
+# Visualization 1: body size and daily sleep in mammals
+# Data: ggplot2::msleep
+# Source: https://ggplot2.tidyverse.org/reference/msleep.html
+# Sleep and weight data: Savage & West (2007), doi:10.1073/pnas.0610080104
 
-```{r}
-1 + 1
+#install.packages(ggplot2)
+
+library(ggplot2)
+
+#calling msleep function from package
+sleep_data <- ggplot2::msleep
+
+# Create the scatterplot and add a fitted regression line.
+sleep_plot_1 <- ggplot(sleep_data, aes(x = bodywt, y = sleep_total)) +
+  #scatterplot for each row of data
+  geom_point(size = 2.5, alpha = 0.7, colour = "grey30") +
+  #linear regression line
+  geom_smooth(
+    method = "lm",
+    formula = y ~ x,
+    se = TRUE,
+    colour = "black",
+    fill = "grey80"
+  ) +
+  #body weight on a log scale as too much variance in weight normally
+  #regression will still plot this even though it comes after
+  scale_x_log10(
+    breaks = c(0.01, 0.1, 1, 10, 100, 1000, 10000),
+    labels = c("0.01", "0.1", "1", "10", "100", "1,000", "10,000")
+  ) +
+  #y scale
+  #set continuous with break point 0-24, 4
+  scale_y_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24)) +
+  #range
+  coord_cartesian(ylim = c(0, 24)) +
+  #add labels to full plot
+  labs(
+    title = "Total Mammal Sleep (hrs) vs Body Weight (kgs)",
+        x = "Body weight (kg; log scale)",
+    y = "Total sleep (hours per day)",
+    caption = paste(
+      "Line: linear regression; shaded band: 95% confidence interval.",
+      "Source: ggplot2::msleep (Savage & West, 2007).",
+      sep = "\n"
+    )
+  ) +
+  
+  theme_classic(base_size = 12)
+
+print(sleep_plot_1)
 ```
 
 
+####PLOT2

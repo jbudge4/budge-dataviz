@@ -6,7 +6,6 @@ html:
 toc: true
 code-fold: true
 ---
-Do Smaller Mammals Sleep More?
 
 Some mammals spend much of their day asleep, while others get by on only a few hours. Why such a difference? Scientists have proposed several benefits of sleep, including saving energy and supporting learning and memory. But how long an animal sleeps may also depend on how much time it needs to find food and how safely it can rest without encountering predators (Capellini et al., 2008). Could an animal’s size help explain its sleeping habits?
 
@@ -52,7 +51,7 @@ sleep_plot_1 <- ggplot(sleep_data, aes(x = bodywt, y = sleep_total)) +
   ) +
 
   labs(
-    title = "Smaller mammals tend to sleep longer",
+    title = "Mammal Sleep (hrs) vs Body Size (kg)",
     x = "Body weight (kg)",
     y = "Hours of sleep per day" ) +
 
@@ -102,7 +101,6 @@ sleep_by_order <- sleep_data |>
     order_label = paste0(group_name, "\n", n, " species"))
 
 #then repeat plotting process from step 1 but now broken down by the types of mammal
-#using 
 sleep_plot_2_public <- ggplot(
   sleep_by_order,
   aes(x = bodywt, y = sleep_total)
@@ -134,7 +132,7 @@ sleep_plot_2_public <- ggplot(
 
   # Lead with the takeaway; explain how to read the graph below it.
   labs(
-    title = "Smaller mammals don't always sleep longer",
+    title = "Sleep (hrs) vs Body Size (kg) Across Mammal Type",
     
     x = "Body weight (kg)",
     y = "Hours of sleep per day",)   +
@@ -145,7 +143,7 @@ sleep_plot_2_public <- ggplot(
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank(),
     strip.text = element_text(face = "bold", size = 12),
-    plot.title = element_text(face = "bold", size = 20),
+    plot.title = element_text(face = "bold", size = 18),
     plot.subtitle = element_text(size = 12),
     plot.caption = element_text(hjust = 0, size = 10),
     panel.spacing = grid::unit(1.5, "lines")

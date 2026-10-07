@@ -10,7 +10,6 @@ Sleep duration varies considerably across mammalian species. Proposed physiologi
 
 To examine this relationship, we used the msleep dataset from the ggplot2 package, which contains observations for 83 mammalian species. The analysis focused on body mass in kilograms and total daily sleep duration in hours. The dataset’s sleep and body-mass measurements were compiled from Savage and West (2007). Because body mass varies widely across species, we applied a base-10 logarithmic transformation. This allows very small and very large mammals to be displayed on the same axis, with equal spacing representing tenfold increases in body mass. We fitted a linear regression predicting daily sleep duration from log-transformed body mass.
 
-####PLOT1
 ```{r - plot1}
 # Visualization 1: body size and daily sleep in mammals
 # Data: ggplot2::msleep
@@ -68,11 +67,13 @@ Figure 1 shows a negative association across the 83 species: smaller mammals gen
 
 To explore whether the overall relationship also appears within groups of related mammals, we repeated the plot separately for each mammalian order with at least six observations. This selection retained four orders: Rodentia (rodents; 22 species), Carnivora (carnivorans; 12 species), Primates (12 species), and Artiodactyla (even-toed ungulates; 6 species). The six-observation threshold was a practical choice to exclude groups with very few species. Together, these orders account for 52 of the original 83 observations. We fitted a separate regression line for each order, using the same log-transformed body mass and axis ranges as in Figure 1.
 
-####PLOT2
 ```{r - plot2}
+#| message: false
 #count the types of animal in the 'orders' (e.g. rodent, primate)
 #then only take ones with greater than 6 animals
 #then make new column with the n of the animal beside the order
+library("dplyr")
+
 sleep_by_order <- sleep_data |> 
   add_count(order, name = "n") |>
   filter(n >= 6) |>
@@ -130,4 +131,8 @@ Figure 2 shows that the overall negative association is not consistent across th
 
 These patterns suggest that the overall association may partly reflect differences between groups of mammals. However, the plots alone do not establish that the groups’ relationships differ statistically or explain what causes the differences in sleep duration.
 
+References
 
+Capellini, I., Barton, R. A., McNamara, P., Preston, B. T., & Nunn, C. L. (2008). Phylogenetic analysis of the ecology and evolution of mammalian     sleep. Evolution, 62(7), 1764–1776. https://doi.org/10.1111/j.1558-5646.2008.00392.x 
+
+Savage, V. M., & West, G. B. (2007). A quantitative, theoretical framework for understanding mammalian sleep. Proceedings of the National Academy of   Sciences of the United States of America, 104(3), 1051–1056. https://doi.org/10.1073/pnas.0610080104
