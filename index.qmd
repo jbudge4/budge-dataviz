@@ -1,0 +1,15 @@
+---
+title: "Data Viz Assignment"
+author: "Josh Budge"
+format: html
+html:
+toc: true
+code-fold: true
+---
+
+
+```{r}
+1 + 1
+```
+
+
