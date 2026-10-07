@@ -115,7 +115,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>Sleep duration varies considerably across mammalian species. Proposed physiological functions of sleep include conserving energy and supporting learning and memory. However, the benefits of sleep do not necessarily explain why some species sleep longer than others. Ecological demands, such as time spent finding food and exposure to predators while resting, may also constrain sleep duration (Capellini et al., 2008). This raises the question of whether body mass has a consistent association with sleep duration across different groups of mammals.</p>
 <p>To examine this relationship, we used the msleep dataset from the ggplot2 package, which contains observations for 83 mammalian species. The analysis focused on body mass in kilograms and total daily sleep duration in hours. The dataset’s sleep and body-mass measurements were compiled from Savage and West (2007). Because body mass varies widely across species, we applied a base-10 logarithmic transformation. This allows very small and very large mammals to be displayed on the same axis, with equal spacing representing tenfold increases in body mass. We fitted a linear regression predicting daily sleep duration from log-transformed body mass.</p>
-<p>####PLOT1</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -180,7 +179,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Figure 1 shows a negative association across the 83 species: smaller mammals generally sleep longer than larger mammals. The fitted line summarizes this relationship, while the shaded band represents a 95% confidence interval around the estimated mean sleep duration. Although this overall pattern may seem surprising, it could partly reflect differences between groups of mammals. Does the same negative association appear when we compare species within groups of more closely related mammals?</p>
 <p>To explore whether the overall relationship also appears within groups of related mammals, we repeated the plot separately for each mammalian order with at least six observations. This selection retained four orders: Rodentia (rodents; 22 species), Carnivora (carnivorans; 12 species), Primates (12 species), and Artiodactyla (even-toed ungulates; 6 species). The six-observation threshold was a practical choice to exclude groups with very few species. Together, these orders account for 52 of the original 83 observations. We fitted a separate regression line for each order, using the same log-transformed body mass and axis ranges as in Figure 1.</p>
-<p>####PLOT2</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -251,6 +249,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Figure 2 shows that the overall negative association is not consistent across these groups. Among rodents and carnivorans, the fitted lines are relatively flat, suggesting little association between body mass and sleep duration within these samples. Primates show a downward relationship, with larger species generally sleeping less. The fitted line for even-toed ungulates also slopes downward, but the small sample and wide confidence band make this estimate uncertain.</p>
 <p>These patterns suggest that the overall association may partly reflect differences between groups of mammals. However, the plots alone do not establish that the groups’ relationships differ statistically or explain what causes the differences in sleep duration.</p>
+<p>References</p>
+<p>Capellini, I., Barton, R. A., McNamara, P., Preston, B. T., &amp; Nunn, C. L. (2008). Phylogenetic analysis of the ecology and evolution of mammalian sleep. Evolution, 62(7), 1764–1776. https://doi.org/10.1111/j.1558-5646.2008.00392.x</p>
+<p>Savage, V. M., &amp; West, G. B. (2007). A quantitative, theoretical framework for understanding mammalian sleep. Proceedings of the National Academy of Sciences of the United States of America, 104(3), 1051–1056. https://doi.org/10.1073/pnas.0610080104</p>
 
 </main>
 <!-- /main column -->
