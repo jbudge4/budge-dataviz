@@ -8,15 +8,16 @@ format:
 ---
 **LAY READER VERSION**
 
-Do Smaller Animal Really Sleep More?
+Do Smaller Animals Really Sleep More?
 
 Some mammals spend much of their day asleep, while others get by on only a few hours. Why such a difference? Scientists have proposed several benefits of sleep, including saving energy and supporting learning and memory. But how long an animal sleeps may also depend on how much time it needs to find food and how safely it can rest without encountering predators (Capellini et al., 2008). Could an animal’s size help explain its sleeping habits?
 
-We explored this question using sleep and body-weight records for 83 mammal species from the msleep dataset. These measurements come from data compiled by Savage and West (2007). Each dot in Figure 1 represents one species, showing its weight in kilograms and how many hours it sleeps per day.
+We explored this question using sleep and body-weight records for 83 mammal species from the msleep dataset. These measurements come from data compiled by Savage and West (2007). Each grey dot in Figure 1 represents one species, showing how many hours it sleeps per day.
 
-To fit tiny and enormous mammals on the same graph, the weight axis increases in multiples of ten: from 0.01 kg to 0.1 kg, then 1 kg, 10 kg, and so on. We added a straight line to summarize the overall trend.
+We divided the species into two categories using the middle body weight in the dataset: 1.67 kg. The smaller category contains 42 species weighing up to and including 1.67 kg, and the larger category contains 41 species weighing more than 1.67 kg. The teal diamonds show the average sleep duration in each category. Dots are spread slightly sideways to make overlapping species easier to see; their sideways positions do not represent their exact weights.
 
 ```{r - layplot1}
+#| message: false
 # Visualization 1: body size and daily sleep in mammals
 # Data: ggplot2::msleep
 # Source: https://ggplot2.tidyverse.org/reference/msleep.html
@@ -25,75 +26,91 @@ To fit tiny and enormous mammals on the same graph, the weight axis increases in
 
 #calling msleep function from package
 library(ggplot2)
+library(dplyr)
 
 sleep_data <- ggplot2::msleep
 
-sleep_plot_1 <- ggplot(sleep_data, aes(x = bodywt, y = sleep_total)) +
-  # Draw the teal line and confidence band behind the points.
-  geom_smooth(
-    method = "lm",
-    formula = y ~ x,
-    se = TRUE,
-    level = 0.95,
-    colour = "#007C83",
-    fill = "#007C83",
-    alpha = 0.15
-  ) +
-  # Match the points in the second plot.
-  geom_point(size = 2.8, alpha = 0.75, colour = "grey30") +
+# Divide species at the median (middle) body weight.
+# factor() keeps "Smaller" before "Larger" on the x-axis.
+lay_all <- sleep_data |>
+  mutate(
+    size_group = if_else(bodywt <= median(bodywt), "Smaller", "Larger"),
+    size_group = factor(size_group, levels = c("Smaller", "Larger"))
+  )
 
-  # Each labelled step represents a tenfold increase in weight.
-  scale_x_log10(
-    breaks = c(0.01, 0.1, 1, 10, 100, 1000),
-    labels = c("0.01", "0.1", "1", "10", "100", "1,000")
+
+sleep_plot_1_public <- ggplot(
+  lay_all, aes(x = size_group, y = sleep_total)
+) +
+  # Spread dots sideways only: sleep values stay unchanged.
+  # seed makes the sideways positions repeatable when rendering.
+  geom_point(
+    position = position_jitter(width = 0.12, height = 0, seed = 123),
+    size = 1.4, alpha = 0.65, colour = "grey30"
+  ) +
+  # Calculate the mean sleep for each category and draw a mean bar.
+   stat_summary(
+    fun = mean,
+    geom = "bar",
+    width = 0.6,
+    fill = "#007C83",
+    alpha = 0.25
+  ) +
+    # Mark the mean with a horizontal teal line.
+  stat_summary(
+    fun = mean,
+    geom = "point",
+    shape = 95,
+    size = 20,
+    colour = "#007C83"
   ) +
   scale_y_continuous(breaks = seq(0, 24, 4)) +
-  coord_cartesian(
-    xlim = range(sleep_data$bodywt),
-    ylim = c(0, 24)
-  ) +
-
+  coord_cartesian(ylim = c(0, 24)) +
   labs(
-    title = "Mammal Sleep (hrs) vs Body Size (kg)",
-    x = "Body weight (kg)",
-    y = "Hours of sleep per day" ) +
-
-  # Match the second plot's theme and text sizes.
+    title = "Smaller mammals sleep longer on average",
+    x = "Body size category",
+    y = "Hours of sleep per day",
+    caption = "Grey dots: individual species. Teal bars: average sleep."
+  ) +
   theme_minimal(base_size = 14) +
   theme(
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank(),
-    plot.title = element_text(face = "bold", size = 20),
-    plot.subtitle = element_text(size = 12),
+    plot.title = element_text(face = "bold", size = 18),
     plot.caption = element_text(hjust = 0, size = 10)
   )
 
-print(sleep_plot_1)
+print(sleep_plot_1_public)
 ```
 
-The first graph reveals a potentially surprising pattern: smaller mammals tend to sleep longer than larger mammals. The shaded band around the line shows uncertainty about the estimated average sleep duration at each body weight.
+The first graph reveals a potentially surprising pattern: smaller mammals tend to sleep longer than larger mammals. The smaller category averages about 12.5 hours of sleep per day, compared with 8.3 hours in the larger category. The grey dots also show that sleep duration varies considerably within each category.
 
 But this broad comparison brings together very different animals. Does the pattern hold when we compare species that are more closely related?
 
 To take a closer look, we split the data into groups of related mammals. We included only groups with at least six species in the dataset, avoiding comparisons based on just a handful of points. This left four groups: rodents such as mice and squirrels (22 species); cats, dogs, seals and their relatives (12 species); primates, including monkeys, apes and humans (12 species); and cattle, deer, pigs and their relatives (6 species).
 
-Together, these groups include 52 of the original 83 species. Each panel in Figure 2 has its own trend line, but all use the same scales so they can be compared directly.
+Together, these groups include 52 of the original 83 species. Within each group, we divided species into smaller and larger halves using that group’s middle body weight. This means “smaller” and “larger” are relative to each group: a larger rodent could still weigh less than a smaller primate. Each panel in Figure 2 shows the individual species and their category averages, with the same sleep scale so they can be compared directly.
 
 
 ```{r - layplot2}
 #| message: false
-#count the types of animal in the 'orders' (e.g. rodent, primate)
-#then only take ones with greater than 6 animals
-#then make new column with the n of the animal beside the order
-#make animal names explicit for public readers
 
 
-library("dplyr")
+library(ggplot2)
+library(dplyr)
 
-sleep_by_order <- sleep_data |>
+# Keep orders with at least six species.
+# Calculate a separate median body weight WITHIN each order.
+lay_by_order <- sleep_data |>
   add_count(order, name = "n") |>
   filter(n >= 6) |>
+  group_by(order) |>
   mutate(
+    size_group = if_else(bodywt <= median(bodywt), "Smaller", "Larger")
+  ) |>
+  ungroup() |>
+  mutate(
+    size_group = factor(size_group, levels = c("Smaller", "Larger")),
     group_name = case_when(
       order == "Artiodactyla" ~ "Cattle, deer, pigs and relatives",
       order == "Carnivora" ~ "Cats, dogs, seals and relatives",
@@ -101,53 +118,44 @@ sleep_by_order <- sleep_data |>
       order == "Rodentia" ~ "Mice, squirrels and other rodents",
       TRUE ~ order
     ),
-    order_label = paste0(group_name, "\n", n, " species"))
+    order_label = paste0(group_name, "\n", n, " species")
+  )
 
-#then repeat plotting process from step 1 but now broken down by the types of mammal
 sleep_plot_2_public <- ggplot(
-  sleep_by_order,
-  aes(x = bodywt, y = sleep_total)
+  lay_by_order, aes(x = size_group, y = sleep_total)
 ) +
-  # Fit a separate line in each panel.
-  # Draw the band first so it sits behind the dots.
-  # With the log scale below, the model uses log10(body weight).
-  geom_smooth(
-    method = "lm", formula = y ~ x,
-    se = TRUE, level = 0.95,
-    colour = "#007C83", fill = "#007C83", alpha = 0.15
+  geom_point(
+    position = position_jitter(width = 0.12, height = 0, seed = 123),
+    size = 1.4, alpha = 0.65, colour = "grey30"
   ) +
-  # Each dot represents one species.
-  geom_point(size = 2.2, alpha = 0.75, colour = "grey30") +
-
-
-
-  # Use the same axes in every panel so comparisons remain fair.
-  facet_wrap(~ order_label, ncol = 2, scales = "fixed") +
-  scale_x_log10(
-    breaks = c(0.01, 0.1, 1, 10, 100, 1000),
-    labels = c("0.01", "0.1", "1", "10", "100", "1,000")
+  # Compute a separate category average within each panel.
+  stat_summary(
+    fun = mean, geom = "bar",
+    fill = "#007C83", alpha = 0.25, colour = "white"
   ) +
+    # Mark the mean with a horizontal teal line.
+  stat_summary(
+    fun = mean,
+    geom = "point",
+    shape = 95,
+    size = 10,
+    colour = "#007C83"
+  ) +
+  facet_wrap(~ order_label, ncol = 2, scales = "fixed", axes = "all_x", axis.labels = "all_x") +
   scale_y_continuous(breaks = seq(0, 24, 4)) +
-  coord_cartesian(
-    xlim = range(sleep_data$bodywt),
-    ylim = c(0, 24)
-  ) +
-
-  # Lead with the takeaway; explain how to read the graph below it.
+  coord_cartesian(ylim = c(0, 24)) +
   labs(
-    title = "Sleep (hrs) vs Body Size (kg) Across Mammal Type",
-    
-    x = "Body weight (kg)",
-    y = "Hours of sleep per day",)   +
-
-  # Larger text and light horizontal guides make the panels easier to read.
+    title = "The size difference is less consistent within groups",
+    x = "Body size relative to others in the same animal group",
+    y = "Hours of sleep per day",
+    caption = "Grey dots: individual species. Teal bar: average sleep."
+  ) +
   theme_minimal(base_size = 14) +
   theme(
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank(),
-    strip.text = element_text(face = "bold", size = 12),
+    strip.text = element_text(face = "bold", size = 11),
     plot.title = element_text(face = "bold", size = 18),
-    plot.subtitle = element_text(size = 12),
     plot.caption = element_text(hjust = 0, size = 10),
     panel.spacing = grid::unit(1.5, "lines")
   )
@@ -155,9 +163,9 @@ sleep_plot_2_public <- ggplot(
 print(sleep_plot_2_public)
 ```
 
-The closer look reveals a less consistent pattern. Among rodents and the group containing cats, dogs and seals, the lines are almost flat: larger species do not appear to sleep much more or less than smaller ones. Among primates, however, larger species still tend to sleep less. The line for cattle, deer, pigs and their relatives also slopes downward, but with only six species and a wide shaded band, that trend is uncertain.
+The closer look reveals a less consistent pattern. Among rodents and the group containing cats, dogs and seals, the average sleep durations are similar for smaller and larger species. Among primates, however, the larger species average less sleep. For cattle, deer, pigs and their relatives, the larger species actually average more sleep, but there are only three species in each size category, so this comparison should be interpreted cautiously. Dividing body weight into two categories simplifies the comparison but leaves out some of the detail shown in the scientific version’s scatterplots.
 
-The overall pattern therefore tells only part of the story. Smaller mammals generally sleep longer in this dataset, but the relationship becomes less consistent when we compare more closely related species. Some of the broad pattern may reflect which groups of animals we are comparing. These graphs help reveal that possibility, although they cannot tell us what causes the differences or whether the differences between the groups’ trends are more than we might expect by chance.
+The overall pattern therefore tells only part of the story. Smaller mammals generally sleep longer in this dataset, but the relationship becomes less consistent when we compare more closely related species. Some of the broad pattern may reflect which groups of animals we are comparing. These graphs help reveal that possibility, although they cannot tell us what causes the differences or whether the differences between the groups’ size comparisons are more than we might expect by chance.
 
 Leaving us to wonder, what exactly is sleep for anyway?
 
