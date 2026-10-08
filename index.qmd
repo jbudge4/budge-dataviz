@@ -6,6 +6,11 @@ format:
     toc: true
     code-fold: true
 ---
+**ABSTRACT**
+
+Given sleep's necessity for bodily and mental recovery, one's intuition may lead them to believe that larger animals have to sleep longer than smaller ones given they have more mass to recover. This assignment shows that in fact the opposite may be true, but the story gets complicated the more detailed the analysis, and like most things there actually isn't a simple answer as to what the purpose of sleep is.
+
+
 **LAY READER VERSION**
 
 Do Smaller Animals Really Sleep More?
